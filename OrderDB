@@ -1,1 +1,112 @@
+import java.awt.HeadlessException;
+import static java.awt.image.ImageObserver.WIDTH;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
+/*
+ * Program Name: OrderDB.java
+ * 
+ * CIS355A
+ * Prof. Elvia Earley
+ * DeVry University
+
+ * 
+ * Assignment: Course Project Week 7
+ * @author Simon Harris
+ * 
+ * Program Desc: Provides connectivity between the program and the Database
+ * Created using NetBeans IDE 8.2
+*/
+
+public class OrderDB {
+    //Connection attributes/information
+    
+    /*
+    ###################################
+    DB info will be posted in the forms!
+    But put it here when you have the info.
+    ###################################
+    */
+    
+    // Just double checks that pulling information from the database works by outputting messages to the console.
+    static Boolean debug = false;
+    
+    public static void addOrderToDatabase(Order order){
+        try{ 
+            // Attempts to export the information to the database
+            Connection conn = null; 
+            PreparedStatement ps;
+            // insert statement
+            String insStmt = "INSERT INTO flooring (CustomerName, CustomerAddress, FlooringType, FloorArea, FloorCost) VALUES(?, ?, ?, ?, ?)";
+            
+            // logs into the online-hosted database
+            conn = (Connection) DriverManager.getConnection(url, user, pass);
+
+            // prepares tp add the information to the database.
+            ps = (PreparedStatement) conn.prepareStatement(insStmt);
+            ps.setString(1, order.getCustomerName());
+            ps.setString(2, order.getCustomerAddress());
+            ps.setString(3, order.getFloorType());
+            ps.setString(4, String.valueOf(order.getFloorArea()));
+            ps.setString(5, String.valueOf(order.getFloorCost()));
+            ps.execute(); 
+            
+            // Some feedback for the user notifying that they succeeded.
+            JOptionPane.showMessageDialog(null, "Successfully added order" , "Success!", WIDTH);
+
+        } catch (HeadlessException | NumberFormatException | SQLException e){
+            // Shows a message panel if an error occurs
+            JOptionPane.showMessageDialog(null, "Error: " + e, "Error", WIDTH);
+        }
+    }
+    
+    // Pulls the orders from the database, and passes an ArrayList<Order> back to the calling method.
+    public static ArrayList<Order> getOrdersFromDatabase(){
+        ArrayList<Order> orders = new ArrayList<>();
+               
+        Connection conn = null;
+        Statement stmt; // select statement
+        String selStmt = "SELECT * FROM flooring"; // Prepare statement to pull from database
+                
+        try{
+            
+            conn = (Connection) DriverManager.getConnection(url, user, pass);
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(selStmt);
+            
+            // Loops through the database while there are still entries.
+            while(rs.next()){
+                String name = rs.getString("CustomerName");
+                String address = rs.getString("CustomerAddress");
+                String type = rs.getString("FlooringType");
+                double area;
+                area = Double.parseDouble(String.valueOf(rs.getFloat("FloorArea")));
+                double cost;
+                cost = Double.parseDouble(String.valueOf(rs.getFloat("FloorCost")));
+                
+                orders.add(new Order(name, address, type, area, cost)); // adds to the arraylist
+            }
+            
+            
+            // If debug is enabled, ensures that the order list is indeed populated by outputting to the console.
+            if (debug){
+                System.out.print("Contact : Address : Floor : Area : Cost\n");
+
+                orders.forEach((o) -> {
+                    System.out.format("%s : %s : %s : %.2f : $%.2f\n", o.getCustomerName(), o.getCustomerAddress(), o.getFloorType(), o.getFloorArea(), o.getFloorCost());
+                });
+            }
+            
+        } catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Error: " + e, "Error", WIDTH);
+        }
+        
+         return orders;
+    }
+}
