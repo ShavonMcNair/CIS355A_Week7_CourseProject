@@ -1,3 +1,4 @@
+
 import java.awt.HeadlessException;
 import static java.awt.image.ImageObserver.WIDTH;
 import java.sql.Connection;
@@ -17,29 +18,28 @@ import javax.swing.JOptionPane;
  * DeVry University
 
  * 
- * Assignment: Course Project Week 7
+ * Assignment: CIS355A Course Project, Team 3. Flooring Application w/e database
  * @author Simon Harris
  * 
- * Program Desc: Provides connectivity between the program and the Database
+ * Program Desc: Allows user to create customer orders, sleect a flooring type, 
+ *        calculates cost/area, and uploads it into a database
  * Created using NetBeans IDE 8.2
 */
 
 public class OrderDB {
     //Connection attributes/information
+    static String DBNAME = "CourseProjectWk7_3912";
     
-    /*
-    ###################################
-    DB info will be posted in the forms!
-    But put it here when you have the info.
-    ###################################
-    */
+    static String url = "jdbc:mysql://devry.edupe.net:4300/"+ DBNAME;
+    static String user = "3912";
+    static String pass = "team3database";
     
     // Just double checks that pulling information from the database works by outputting messages to the console.
     static Boolean debug = false;
     
+    // Attempts to export a order to the database
     public static void addOrderToDatabase(Order order){
         try{ 
-            // Attempts to export the information to the database
             Connection conn = null; 
             PreparedStatement ps;
             // insert statement
@@ -56,13 +56,13 @@ public class OrderDB {
             ps.setString(4, String.valueOf(order.getFloorArea()));
             ps.setString(5, String.valueOf(order.getFloorCost()));
             ps.execute(); 
-            
             // Some feedback for the user notifying that they succeeded.
             JOptionPane.showMessageDialog(null, "Successfully added order" , "Success!", WIDTH);
+            conn.close();
 
         } catch (HeadlessException | NumberFormatException | SQLException e){
             // Shows a message panel if an error occurs
-            JOptionPane.showMessageDialog(null, "Error: " + e, "Error", WIDTH);
+            JOptionPane.showMessageDialog(null, "Encountered an error adding order to database: " + e, "Error", WIDTH);
         }
     }
     
@@ -70,12 +70,12 @@ public class OrderDB {
     public static ArrayList<Order> getOrdersFromDatabase(){
         ArrayList<Order> orders = new ArrayList<>();
                
-        Connection conn = null;
+        Connection conn;
         Statement stmt; // select statement
         String selStmt = "SELECT * FROM flooring"; // Prepare statement to pull from database
                 
         try{
-            
+            // Prepares connection / query statement to database
             conn = (Connection) DriverManager.getConnection(url, user, pass);
             stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(selStmt);
@@ -92,9 +92,9 @@ public class OrderDB {
                 
                 orders.add(new Order(name, address, type, area, cost)); // adds to the arraylist
             }
+            conn.close();
             
-            
-            // If debug is enabled, ensures that the order list is indeed populated by outputting to the console.
+            // If debug is enabled, outputs list details to the console.
             if (debug){
                 System.out.print("Contact : Address : Floor : Area : Cost\n");
 
@@ -102,9 +102,8 @@ public class OrderDB {
                     System.out.format("%s : %s : %s : %.2f : $%.2f\n", o.getCustomerName(), o.getCustomerAddress(), o.getFloorType(), o.getFloorArea(), o.getFloorCost());
                 });
             }
-            
         } catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "Error: " + e, "Error", WIDTH);
+            JOptionPane.showMessageDialog(null, "Encountered an error in retrieving information from the database: " + e, "Error", WIDTH);
         }
         
          return orders;
