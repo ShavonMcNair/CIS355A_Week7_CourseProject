@@ -1,1 +1,87 @@
+/*
+Author : Shavon
 
+Order class for the Flooring Application
+Week 7 Course Project
+*/
+
+
+public class Order {
+
+    //Attributes 
+    private String customerName;
+    private String customerAddress;
+    private String floorType;
+    private double floorArea;
+    private double floorCost;
+
+// Constructors
+    
+    public Order(String name, String address, String type, double area, double cost){
+        this.customerName = name;
+        this.customerAddress = address;
+        this.floorType = type;
+        this.floorArea = area;
+        this.floorCost = cost;
+        
+    }
+    
+    
+    //Set and Get Method
+    
+    public void setCustomerName(String name) {
+        this.customerName = name;
+    }
+    
+    public String getCustomerName() {
+        return customerName;
+    }
+    
+    public void setCustomerAddress(String address) {
+        this.customerAddress = address;
+    }
+    
+    public String getCustomerAddress() {
+        return customerAddress;
+    }
+    
+    public void setFloorType(String type){
+        this.floorType = type;
+    }
+    
+     public String getFloorType(){
+         return floorType;
+     }
+    
+
+    public void setFloorArea(double width, double length){
+        this.floorArea = width;
+        this.floorArea = length;
+    }
+    
+    public double getFloorArea(){
+        return floorArea;
+    }
+    
+    public void setFloorCost(double cost){
+        this.floorCost = cost;
+    }
+    
+    public double getFloorCost(){
+        return floorCost;
+    }
+    
+    //Calculating Area
+    
+    public static double calculateArea(double width, double length){
+        return (width*length);
+    }
+    
+    public static double calculateCost(double area, double cost){
+        return  area * cost;
+    }
+    
+    public String toString(){
+        return customerName;
+    }
+}
