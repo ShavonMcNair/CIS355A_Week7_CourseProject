@@ -1,5 +1,4 @@
 
-
 import java.awt.HeadlessException;
 import static java.awt.image.ImageObserver.WIDTH;
 import java.util.ArrayList;
@@ -159,7 +158,7 @@ public class OrderGUI extends javax.swing.JFrame {
         jtfSumFloor = new javax.swing.JTextField();
         jtfSumArea = new javax.swing.JTextField();
         jtfSumCost = new javax.swing.JTextField();
-        jbnConfirmOrder = new javax.swing.JButton();
+        jbnCompleteOrder = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -322,11 +321,11 @@ public class OrderGUI extends javax.swing.JFrame {
 
         jtfSumCost.setEditable(false);
 
-        jbnConfirmOrder.setText("Confirm Order");
-        jbnConfirmOrder.setEnabled(false);
-        jbnConfirmOrder.addActionListener(new java.awt.event.ActionListener() {
+        jbnCompleteOrder.setText("Complete Order");
+        jbnCompleteOrder.setEnabled(false);
+        jbnCompleteOrder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbnConfirmOrderActionPerformed(evt);
+                jbnCompleteOrderActionPerformed(evt);
             }
         });
 
@@ -355,7 +354,7 @@ public class OrderGUI extends javax.swing.JFrame {
                             .addComponent(jtfSumArea, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(33, 33, 33)
-                        .addComponent(jbnConfirmOrder))
+                        .addComponent(jbnCompleteOrder))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10)
@@ -395,7 +394,7 @@ public class OrderGUI extends javax.swing.JFrame {
                     .addComponent(jLabel12)
                     .addComponent(jtfSumCost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jbnConfirmOrder)
+                .addComponent(jbnCompleteOrder)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel14)
                 .addContainerGap(42, Short.MAX_VALUE))
@@ -462,7 +461,7 @@ public class OrderGUI extends javax.swing.JFrame {
         if (checkFormForValidLengthWidth()){
             double length = getDoubleFromJTF(jtfLength);
             double width = getDoubleFromJTF(jtfWidth);
-            JOptionPane.showMessageDialog(null, "Area is :" + Order.calculateArea(length, width));
+            JOptionPane.showMessageDialog(null, "Area is :" + Order.calculateArea(length, width) + " SqFt");
         }
     }                                           
 
@@ -472,7 +471,7 @@ public class OrderGUI extends javax.swing.JFrame {
             double length = getDoubleFromJTF(jtfLength);
             double width = getDoubleFromJTF(jtfWidth);
             double cost = getFlooringCost();
-            JOptionPane.showMessageDialog(null, "Cost would be: " + Order.calculateCost(Order.calculateArea(length, width), cost));
+            JOptionPane.showMessageDialog(null, "Cost would be: $" + Order.calculateCost(Order.calculateArea(length, width), cost));
         } 
     }                                           
 
@@ -493,7 +492,7 @@ public class OrderGUI extends javax.swing.JFrame {
             jtfSumFloor.setText(order.getFloorType());
             jtfSumArea.setText(String.valueOf(order.getFloorArea()));
             jtfSumCost.setText(String.format("$%.2f", order.getFloorCost()));
-            jbnConfirmOrder.setEnabled(true); // Enables the confirm order button
+            jbnCompleteOrder.setEnabled(true); // Enables the confirm order button
             
             // directs user to the summary page
             OrderTabPane.setSelectedIndex(1);
@@ -502,7 +501,7 @@ public class OrderGUI extends javax.swing.JFrame {
         }
     }                                         
 
-    private void jbnConfirmOrderActionPerformed(java.awt.event.ActionEvent evt) {                                                
+    private void jbnCompleteOrderActionPerformed(java.awt.event.ActionEvent evt) {                                                 
         // Adds the order to the Database
         OrderDB.addOrderToDatabase(order);
         
@@ -511,7 +510,7 @@ public class OrderGUI extends javax.swing.JFrame {
         jtfAddress.setText("");
         jtfLength.setText("");
         jtfWidth.setText("");
-    }                                               
+    }                                                
 
     private void OrderTabPaneStateChanged(javax.swing.event.ChangeEvent evt) {                                          
         // When switching to the order Summary panel, updates the list from the database.
@@ -581,7 +580,7 @@ public class OrderGUI extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField5;
     private javax.swing.JButton jbnCalcArea;
     private javax.swing.JButton jbnCalcCost;
-    private javax.swing.JButton jbnConfirmOrder;
+    private javax.swing.JButton jbnCompleteOrder;
     private javax.swing.JButton jbnSubmit;
     private javax.swing.JRadioButton jrbCarpet;
     private javax.swing.JRadioButton jrbWood;
